@@ -2,8 +2,13 @@ package com.tpe.controller;
 
 
 import com.tpe.domain.Student;
+import com.tpe.dto.StudentDTO;
 import com.tpe.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -57,7 +62,7 @@ public class StudentController {
     //@RequestBody: HTTP requestin bodysindeki JSON formatindaki bilgiyi student objesine mapler.
     //(Entity obje <-> JSON) --> Jackson
 
-    //5-belirli bir id ile studenti goruntuleyelim
+    //5-belirli bir id ile studenti goruntuleyelim + Request Param
     //http://localhost:8080/students/query?id=1 + GET
     @GetMapping("/query")
     public ResponseEntity<Student> getStudent(@RequestParam("id") Long id){
@@ -81,7 +86,7 @@ public class StudentController {
 
 
     //7-belirli bir id ile studenti silelim + Path Param
-    //http://localhost:8080/students/1
+    //http://localhost:8080/students/1 + DELETE
     @DeleteMapping("/{id}")
     public ResponseEntity<Map<String,String>> deleteStudent (@PathVariable Long id ){
 
@@ -93,7 +98,51 @@ public class StudentController {
         return ResponseEntity.ok(response); //200
     }
 
-    //9-update + DTO
+    //9-belirli bir id ile studenti update edelim.(name,lastName,grade,email,phoneNumber)
+    //http://localhost:8080/students/1 + UPDATE + JSON
+    @PutMapping("/{id}")
+    public ResponseEntity<Map<String,String>> updateStudent(@PathVariable("id") Long id,
+                                                            @Valid @RequestBody StudentDTO studentDTO){
+
+        studentService.updateStudent(id,studentDTO);
+
+        Map<String,String> response = new HashMap<>();
+        response.put("message","Student is updated successfully..");
+        response.put("status","success");
+        return ResponseEntity.ok(response); //200
+    }
+
+    //11-pagination - sayfalandirma
+    //tum kayitlari page page listeleyelim
+    //http://localhost:8080/students/page?
+    //                                    page=1&
+    //                                    size=10&
+    //                                    sort=name&
+    //                                    direction=DESC + GET
+    @GetMapping("/page")
+    public ResponseEntity<Page<Student>> getAllStudentByPage(@RequestParam("page") int page, //hangi page gosterilsin ilk deger 0
+                                                             @RequestParam("size") int size, //kac kayit
+                                                             @RequestParam("sort") String prop, //hangi fielda gore
+                                                             @RequestParam("direction") Sort.Direction direction) //siralama yonu
+    {
+        Pageable pageable = PageRequest.of(page,size,Sort.by(direction,prop));
+        Page<Student> studentsByPage= studentService.getAllStudentPageing(pageable);
+        return new ResponseEntity<>(studentsByPage,HttpStatus.OK);
+
+    }
+
+    //13-lastName ile studentlari listeleyelim.
+    //http://localhost:8080/students/querylastname?lastName=Bey
+    @GetMapping("/querylastname")
+    public ResponseEntity<List<Student>> getAllStudentsByLastName(@RequestParam("lastName") String lastname){
+
+        List<Student> studentList = studentService.getAllStudentByLastName(lastname);
+        return ResponseEntity.ok(studentList);
+
+    }
+
+    //15-grade ile studentlari listeleyim. **ODEV**
+    //http://localhost:8080/students/grade/99
 
 
 }
