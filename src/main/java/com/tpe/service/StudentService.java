@@ -29,7 +29,7 @@ public class StudentService {
     public void saveStudent(Student student) {
         //student dah once kaydedilmis mi --> ayni emaile sahip student var mi?
 
-        if(studentRepository.existsByEmail(student.getEmail())){
+        if (studentRepository.existsByEmail(student.getEmail())) {
             throw new ConflictException("Email is already exist!");
         }
         studentRepository.save(student);
@@ -37,7 +37,7 @@ public class StudentService {
 
     //6-
     public Student getStudentById(Long id) {
-        Student student = studentRepository.findById(id).orElseThrow(()->
+        Student student = studentRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Student not found by id: " + id));
         return student;
     }
@@ -65,8 +65,7 @@ public class StudentService {
         //a@email.com        id:3 a@email.com -> existEmail:true --> update:OK  - seneryo 3
 
 
-
-        if (existsEmail && !foundStudent.getEmail().equals(studentDTO.getEmail())){
+        if (existsEmail && !foundStudent.getEmail().equals(studentDTO.getEmail())) {
             throw new ConflictException("Email already exist!!!");
         }
 
@@ -88,6 +87,32 @@ public class StudentService {
     //14-
     public List<Student> getAllStudentByLastName(String lastname) {
 
-        return studentRepository.findAllByLastName(lastname);
+        return studentRepository.findAllByLastName(lastname); //select * from student where lastName=''
     }
+
+    //16-
+    public List<Student> getAllStudentByGrade(Integer grade) {
+        //return studentRepository.findAllByGrade(grade);
+        return studentRepository.findAllGradeEquals(grade);
+    }
+
+    //18-
+//    public StudentDTO getStudentDtoById(Long id) {
+//        Student student = getStudentById(id);
+//
+//        //parametre olarak student objesinin kendisini verdigimizde DTO olusturan bir constructor
+//        StudentDTO studentDTO = new StudentDTO(student);
+//        return studentDTO;
+//    }
+
+
+    //studenti DTO ya mapleme islemini JPQL ile yapalim
+    public StudentDTO getStudentDtoById(Long id) {
+
+        StudentDTO studentDTO = studentRepository.findStudentDtoById(id).orElseThrow(()->
+                new ResourceNotFoundException("Student not found by id : " + id));
+        return studentDTO;
+    }
+
+
 }

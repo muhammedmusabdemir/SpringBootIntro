@@ -1,5 +1,6 @@
 package com.tpe.dto;
 
+import com.tpe.domain.Student;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,4 +32,11 @@ public class StudentDTO {
 
     private String phoneNumber;
 
+    public StudentDTO(Student student){
+        this.name=student.getName();
+        this.lastName=student.getLastName();
+        this.grade= student.getGrade();
+        this.email=student.getEmail();
+        this.phoneNumber=student.getPhoneNumber();
+    }
 }

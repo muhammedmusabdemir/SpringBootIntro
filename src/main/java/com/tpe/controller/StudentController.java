@@ -120,16 +120,24 @@ public class StudentController {
     //                                    sort=name&
     //                                    direction=DESC + GET
     @GetMapping("/page")
-    public ResponseEntity<Page<Student>> getAllStudentByPage(@RequestParam("page") int page, //hangi page gosterilsin ilk deger 0
-                                                             @RequestParam("size") int size, //kac kayit
-                                                             @RequestParam("sort") String prop, //hangi fielda gore
-                                                             @RequestParam("direction") Sort.Direction direction) //siralama yonu
+    public ResponseEntity<Page<Student>> getAllStudentByPage(//@RequestParam("page") int page, //hangi page gosterilsin ilk deger 0
+                                                               @RequestParam(value = "page",required = false,defaultValue = "0") int page,//hangi page gösterilsin ilk değer 0
+                                                             //@RequestParam("size") int size, //kac kayit
+                                                               @RequestParam(value = "size",required = false,defaultValue = "2") int size,//kaç kayıt
+                                                               @RequestParam("sort") String prop, //hangi fielda gore
+                                                               @RequestParam("direction") Sort.Direction direction) //siralama yonu
     {
         Pageable pageable = PageRequest.of(page,size,Sort.by(direction,prop));
         Page<Student> studentsByPage= studentService.getAllStudentPageing(pageable);
         return new ResponseEntity<>(studentsByPage,HttpStatus.OK);
 
     }
+    //page,size,sort,direction parametrelerinin girilmesini opsiyonel yapabiliriz.(required=false)
+    //parametrelerin girilmesi default oldugunda default value vermeliyiz.(defaultValue = "0")
+
+
+
+
 
     //13-lastName ile studentlari listeleyelim.
     //http://localhost:8080/students/querylastname?lastName=Bey
@@ -143,6 +151,19 @@ public class StudentController {
 
     //15-grade ile studentlari listeleyim. **ODEV**
     //http://localhost:8080/students/grade/99
+    @GetMapping("/grade/{grade}")
+    public ResponseEntity<List<Student>> getAllStudentByGrade(@PathVariable("grade") Integer grade){
 
+        List<Student> studentList = studentService.getAllStudentByGrade(grade);
+        return ResponseEntity.ok(studentList);
+    }
+
+    //17-idsi verilen studentın görüntüleme requestine response olarak DTO dönelim
+    //http://localhost:8080/students/dto/1 + GET
+    @GetMapping("/dto/{id}")
+    public ResponseEntity<StudentDTO> getStudentDtoById(@PathVariable("id") Long id){
+        StudentDTO studentDTO = studentService.getStudentDtoById(id);
+        return ResponseEntity.ok(studentDTO);
+    }
 
 }
