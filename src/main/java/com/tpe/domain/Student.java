@@ -7,6 +7,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Getter
@@ -43,6 +45,10 @@ public class Student {
 
     private String phoneNumber;
     private LocalDateTime createDate = LocalDateTime.now();
+
+
+    @OneToMany(mappedBy = "student")
+    private List<Book> books = new ArrayList<>();
 
     //getter-setter
     //parametreli/siz constructor
