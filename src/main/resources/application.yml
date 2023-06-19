@@ -11,6 +11,10 @@ spring:
     url: jdbc:postgresql://localhost:5432/springboot_db
     username: dev_user
     password: password
+  security:
+    user:
+      name: admin
+      password: password
   jpa:
     show-sql: true
     hibernate:
@@ -48,3 +52,6 @@ info:
     name: 'Student Management System Demo'
     description: 'Demo App for Spring Boot'
     version: '@project.version@'
+
+
+
