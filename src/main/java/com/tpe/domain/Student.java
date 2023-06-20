@@ -50,6 +50,11 @@ public class Student {
     @OneToMany(mappedBy = "student")
     private List<Book> books = new ArrayList<>();
 
+    @OneToOne
+    private User user;
+
     //getter-setter
     //parametreli/siz constructor
+
+
 }
